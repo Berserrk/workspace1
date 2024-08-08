@@ -16,20 +16,33 @@ all_activities = sorted(all_activities)
 st.header("Activities Table")
 
 # Create the header row
-header_cols = st.columns(len(all_activities) + 1)
-header_cols[0].write("Country")
-for i, activity in enumerate(all_activities):
-    header_cols[i + 1].write(activity)
+header_html = "<tr><th>Country</th>"
+for activity in all_activities:
+    header_html += f"<th>{activity}</th>"
+header_html += "</tr>"
 
 # Create the rows for each country
+rows_html = ""
 for country, info in categories_label.items():
-    row_cols = st.columns(len(all_activities) + 1)
-    row_cols[0].write(country)
-    for i, activity in enumerate(all_activities):
+    row_html = f"<tr><td>{country}</td>"
+    for activity in all_activities:
         if activity in info["activities"]:
-            row_cols[i + 1].markdown("✅", unsafe_allow_html=True)
+            row_html += "<td style='color: green;'>✅</td>"
         else:
-            row_cols[i + 1].write("")
+            row_html += "<td></td>"
+    row_html += "</tr>"
+    rows_html += row_html
+
+# Combine header and rows into a complete table
+table_html = f"""
+<table style='border-collapse: collapse; width: 100%;'>
+    <thead style='border-bottom: 2px solid black;'>{header_html}</thead>
+    <tbody>{rows_html}</tbody>
+</table>
+"""
+
+# Display the table
+st.markdown(table_html, unsafe_allow_html=True)
 
 # Define the scroll operation as a function and pass in something unique for each
 # page load that it needs to re-evaluate where "bottom" is
